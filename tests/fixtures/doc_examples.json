@@ -1,0 +1,21 @@
+{
+  "_comment": "Example values taken from the official provider docs (see source_url per case), checked 2026-11-11. Only values the docs state are asserted (sent size and/or tokens).",
+  "cases": [
+    {"id": "claude-std-1075x1520", "model": "claude-standard", "size": [1075, 1520], "sent": [924, 1307], "tokens": null, "detail": null, "source_url": "https://platform.claude.com/docs/en/build-with-claude/vision-coordinates", "checked": "2026-11-11"},
+    {"id": "claude-std-1920x1080", "model": "claude-standard", "size": [1920, 1080], "sent": [1456, 819], "tokens": 1560, "detail": null, "source_url": "https://platform.claude.com/docs/en/build-with-claude/vision", "checked": "2026-11-11"},
+    {"id": "claude-std-1000x1000", "model": "claude-standard", "size": [1000, 1000], "sent": [1000, 1000], "tokens": 1296, "detail": null, "source_url": "https://platform.claude.com/docs/en/build-with-claude/vision", "checked": "2026-11-11"},
+    {"id": "claude-std-200x200", "model": "claude-standard", "size": [200, 200], "sent": [200, 200], "tokens": 64, "detail": null, "source_url": "https://platform.claude.com/docs/en/build-with-claude/vision", "checked": "2026-11-11"},
+    {"id": "claude-high-1920x1080", "model": "claude-high", "size": [1920, 1080], "sent": [1920, 1080], "tokens": 2691, "detail": null, "source_url": "https://platform.claude.com/docs/en/build-with-claude/vision", "checked": "2026-11-11"},
+    {"id": "claude-high-2000x1500", "model": "claude-high", "size": [2000, 1500], "sent": [2000, 1500], "tokens": 3888, "detail": null, "source_url": "https://platform.claude.com/docs/en/build-with-claude/vision", "checked": "2026-11-11"},
+    {"id": "claude-high-3840x2160", "model": "claude-high", "size": [3840, 2160], "sent": [2576, 1449], "tokens": 4784, "detail": null, "source_url": "https://platform.claude.com/docs/en/build-with-claude/vision", "checked": "2026-11-11"},
+    {"id": "gpt-4o-tile-1024x1024", "model": "gpt-4o", "size": [1024, 1024], "sent": [768, 768], "tokens": 765, "detail": null, "source_url": "https://developers.openai.com/api/docs/guides/images-vision", "checked": "2026-11-11"},
+    {"id": "gpt-4o-tile-2048x4096", "model": "gpt-4o", "size": [2048, 4096], "sent": [768, 1536], "tokens": 1105, "detail": null, "source_url": "https://developers.openai.com/api/docs/guides/images-vision", "checked": "2026-11-11"},
+    {"id": "gpt-4o-low", "model": "gpt-4o", "size": [4000, 3000], "sent": null, "tokens": 85, "detail": "low", "source_url": "https://developers.openai.com/api/docs/guides/images-vision", "checked": "2026-11-11"},
+    {"id": "gpt-5.5-patch-1024x1024", "model": "gpt-5.5", "size": [1024, 1024], "sent": [1024, 1024], "tokens": 1229, "detail": "high", "source_url": "https://developers.openai.com/api/docs/guides/images-vision", "checked": "2026-11-11"},
+    {"id": "gemini-2-300x300", "model": "gemini-2", "size": [300, 300], "sent": [300, 300], "tokens": 258, "detail": null, "source_url": "https://aistudio.google.com/docs/tokens", "checked": "2026-11-11"},
+    {"id": "gemini-3-low", "model": "gemini-3", "size": [1170, 2000], "sent": [1170, 2000], "tokens": 280, "detail": "low", "source_url": "https://aistudio.google.com/docs/media-resolution", "checked": "2026-11-11"},
+    {"id": "gemini-3-medium", "model": "gemini-3", "size": [1170, 2000], "sent": [1170, 2000], "tokens": 560, "detail": "medium", "source_url": "https://aistudio.google.com/docs/media-resolution", "checked": "2026-11-11"},
+    {"id": "gemini-3-high", "model": "gemini-3", "size": [1170, 2000], "sent": [1170, 2000], "tokens": 1120, "detail": "high", "source_url": "https://aistudio.google.com/docs/media-resolution", "checked": "2026-11-11"},
+    {"id": "gemini-3-ultra_high", "model": "gemini-3", "size": [1170, 2000], "sent": [1170, 2000], "tokens": 2240, "detail": "ultra_high", "source_url": "https://aistudio.google.com/docs/media-resolution", "checked": "2026-11-11"}
+  ]
+}
