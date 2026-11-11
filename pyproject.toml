@@ -1,0 +1,38 @@
+[project]
+name = "pixelbudget"
+version = "0.1.0"
+description = "Offline image-token estimates, budget-fit resizing and readable slicing for vision LLM inputs (Pillow only)."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "LeeGyeongPil" }]
+keywords = ["llm", "vision", "multimodal", "tokens", "image", "pillow", "anthropic", "openai", "gemini"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Multimedia :: Graphics",
+  "Typing :: Typed",
+]
+dependencies = ["pillow>=13.0,<14"]
+
+[project.urls]
+Homepage = "https://github.com/LeeGyeongPil/pixelbudget"
+Issues = "https://github.com/LeeGyeongPil/pixelbudget/issues"
+
+[project.scripts]
+pixelbudget = "pixelbudget.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pixelbudget"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

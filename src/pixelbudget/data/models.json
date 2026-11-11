@@ -1,0 +1,466 @@
+{
+  "schema": 1,
+  "models": [
+    {
+      "name": "claude-standard",
+      "provider": "anthropic",
+      "method": "patch",
+      "family": "anthropic",
+      "default_detail": "default",
+      "detail_rules": {
+        "default": {
+          "patch": 28,
+          "max_edge": 1568,
+          "max_tokens": 1568
+        }
+      },
+      "source_url": "https://platform.claude.com/docs/en/build-with-claude/vision",
+      "confidence": "documented",
+      "notes": [
+        "Standard tier: longest edge <= 1568 px and <= 1568 tokens (28 px patches). The token cap, not the edge cap, usually decides the final size.",
+        "Resize follows the reference implementation in https://platform.claude.com/docs/en/build-with-claude/vision-coordinates (binary search on the long edge, short edge rounded)."
+      ],
+      "known_mismatches": [
+        {
+          "size": [
+            2000,
+            1500
+          ],
+          "docs_table_size": [
+            1269,
+            952
+          ],
+          "code": "docs_table_mismatch",
+          "note": "The docs table lists 1269x952 for 2000x1500 but the docs' reference code returns 1270x952 (both 1564 tokens). pixelbudget follows the reference code."
+        }
+      ],
+      "aliases": [],
+      "checked": "2026-11-11",
+      "detail_aliases": {}
+    },
+    {
+      "name": "claude-high",
+      "provider": "anthropic",
+      "method": "patch",
+      "family": "anthropic",
+      "default_detail": "default",
+      "detail_rules": {
+        "default": {
+          "patch": 28,
+          "max_edge": 2576,
+          "max_tokens": 4784
+        }
+      },
+      "source_url": "https://platform.claude.com/docs/en/build-with-claude/vision",
+      "confidence": "documented",
+      "notes": [
+        "High-resolution tier (newer Claude models): longest edge <= 2576 px and <= 4784 tokens."
+      ],
+      "aliases": [],
+      "checked": "2026-11-11",
+      "detail_aliases": {},
+      "known_mismatches": []
+    },
+    {
+      "name": "gpt-5.5",
+      "provider": "openai",
+      "method": "patch",
+      "family": "openai",
+      "default_detail": "original",
+      "detail_rules": {
+        "high": {
+          "patch": 32,
+          "max_dim": 2048,
+          "patch_budget": 2500,
+          "multiplier": 1.2
+        },
+        "original": {
+          "patch": 32,
+          "max_dim": 6000,
+          "patch_budget": 10000,
+          "multiplier": 1.2
+        }
+      },
+      "detail_aliases": {
+        "auto": "original"
+      },
+      "source_url": "https://developers.openai.com/api/docs/guides/images-vision",
+      "confidence": "documented",
+      "notes": [
+        "detail 'auto' means 'original' for gpt-5.5 and later.",
+        "When the patch budget is exceeded the docs only say 'scale down proportionally, round down, recompute'; the exact rounding is reproduced approximately, so such estimates are marked 'approx'."
+      ],
+      "aliases": [],
+      "checked": "2026-11-11",
+      "known_mismatches": []
+    },
+    {
+      "name": "gpt-5.4",
+      "provider": "openai",
+      "method": "patch",
+      "family": "openai",
+      "default_detail": "high",
+      "detail_rules": {
+        "high": {
+          "patch": 32,
+          "max_dim": 2048,
+          "patch_budget": 2500,
+          "multiplier": 1.2
+        }
+      },
+      "detail_aliases": {
+        "auto": "high"
+      },
+      "source_url": "https://developers.openai.com/api/docs/guides/images-vision",
+      "confidence": "documented",
+      "notes": [
+        "detail 'auto' means 'high' for gpt-5.4. Other detail levels listed in the docs are not in this table yet.",
+        "When the patch budget is exceeded the docs only say 'scale down proportionally, round down, recompute'; the exact rounding is reproduced approximately, so such estimates are marked 'approx'."
+      ],
+      "aliases": [],
+      "checked": "2026-11-11",
+      "known_mismatches": []
+    },
+    {
+      "name": "gpt-5.2",
+      "provider": "openai",
+      "method": "patch",
+      "family": "openai",
+      "default_detail": "default",
+      "detail_rules": {
+        "default": {
+          "patch": 32,
+          "max_dim": 2048,
+          "patch_budget": 6144,
+          "multiplier": 1.2
+        }
+      },
+      "detail_aliases": {
+        "auto": "default"
+      },
+      "source_url": "https://developers.openai.com/api/docs/guides/images-vision",
+      "confidence": "documented",
+      "notes": [
+        "When the patch budget is exceeded the docs only say 'scale down proportionally, round down, recompute'; the exact rounding is reproduced approximately, so such estimates are marked 'approx'."
+      ],
+      "aliases": [],
+      "checked": "2026-11-11",
+      "known_mismatches": []
+    },
+    {
+      "name": "gpt-4.1-mini",
+      "provider": "openai",
+      "method": "patch",
+      "family": "openai",
+      "default_detail": "default",
+      "detail_rules": {
+        "default": {
+          "patch": 32,
+          "max_dim": 2048,
+          "patch_budget": 6144,
+          "multiplier": 1.62
+        }
+      },
+      "detail_aliases": {
+        "auto": "default"
+      },
+      "source_url": "https://developers.openai.com/api/docs/guides/images-vision",
+      "confidence": "documented",
+      "notes": [
+        "When the patch budget is exceeded the docs only say 'scale down proportionally, round down, recompute'; the exact rounding is reproduced approximately, so such estimates are marked 'approx'."
+      ],
+      "aliases": [],
+      "checked": "2026-11-11",
+      "known_mismatches": []
+    },
+    {
+      "name": "gpt-5.1",
+      "provider": "openai",
+      "method": "tile",
+      "family": "openai",
+      "default_detail": "high",
+      "detail_aliases": {
+        "auto": "high"
+      },
+      "detail_rules": {
+        "high": {
+          "base": 70,
+          "tile_tokens": 140,
+          "box": 2048,
+          "short_side": 768,
+          "tile": 512
+        },
+        "low": {
+          "base": 70,
+          "low": true
+        }
+      },
+      "source_url": "https://developers.openai.com/api/docs/guides/images-vision",
+      "confidence": "documented",
+      "notes": [],
+      "aliases": [],
+      "checked": "2026-11-11",
+      "known_mismatches": []
+    },
+    {
+      "name": "gpt-5",
+      "provider": "openai",
+      "method": "tile",
+      "family": "openai",
+      "default_detail": "high",
+      "detail_aliases": {
+        "auto": "high"
+      },
+      "detail_rules": {
+        "high": {
+          "base": 70,
+          "tile_tokens": 140,
+          "box": 2048,
+          "short_side": 768,
+          "tile": 512
+        },
+        "low": {
+          "base": 70,
+          "low": true
+        }
+      },
+      "source_url": "https://developers.openai.com/api/docs/guides/images-vision",
+      "confidence": "documented",
+      "notes": [],
+      "aliases": [],
+      "checked": "2026-11-11",
+      "known_mismatches": []
+    },
+    {
+      "name": "gpt-4.1",
+      "provider": "openai",
+      "method": "tile",
+      "family": "openai",
+      "default_detail": "high",
+      "detail_aliases": {
+        "auto": "high"
+      },
+      "detail_rules": {
+        "high": {
+          "base": 85,
+          "tile_tokens": 170,
+          "box": 2048,
+          "short_side": 768,
+          "tile": 512
+        },
+        "low": {
+          "base": 85,
+          "low": true
+        }
+      },
+      "source_url": "https://developers.openai.com/api/docs/guides/images-vision",
+      "confidence": "documented",
+      "notes": [],
+      "aliases": [],
+      "checked": "2026-11-11",
+      "known_mismatches": []
+    },
+    {
+      "name": "gpt-4o",
+      "provider": "openai",
+      "method": "tile",
+      "family": "openai",
+      "default_detail": "high",
+      "detail_aliases": {
+        "auto": "high"
+      },
+      "detail_rules": {
+        "high": {
+          "base": 85,
+          "tile_tokens": 170,
+          "box": 2048,
+          "short_side": 768,
+          "tile": 512
+        },
+        "low": {
+          "base": 85,
+          "low": true
+        }
+      },
+      "source_url": "https://developers.openai.com/api/docs/guides/images-vision",
+      "confidence": "documented",
+      "notes": [],
+      "aliases": [],
+      "checked": "2026-11-11",
+      "known_mismatches": []
+    },
+    {
+      "name": "o1",
+      "provider": "openai",
+      "method": "tile",
+      "family": "openai",
+      "default_detail": "high",
+      "detail_aliases": {
+        "auto": "high"
+      },
+      "detail_rules": {
+        "high": {
+          "base": 75,
+          "tile_tokens": 150,
+          "box": 2048,
+          "short_side": 768,
+          "tile": 512
+        },
+        "low": {
+          "base": 75,
+          "low": true
+        }
+      },
+      "source_url": "https://developers.openai.com/api/docs/guides/images-vision",
+      "confidence": "documented",
+      "notes": [],
+      "aliases": [],
+      "checked": "2026-11-11",
+      "known_mismatches": []
+    },
+    {
+      "name": "o1-pro",
+      "provider": "openai",
+      "method": "tile",
+      "family": "openai",
+      "default_detail": "high",
+      "detail_aliases": {
+        "auto": "high"
+      },
+      "detail_rules": {
+        "high": {
+          "base": 75,
+          "tile_tokens": 150,
+          "box": 2048,
+          "short_side": 768,
+          "tile": 512
+        },
+        "low": {
+          "base": 75,
+          "low": true
+        }
+      },
+      "source_url": "https://developers.openai.com/api/docs/guides/images-vision",
+      "confidence": "documented",
+      "notes": [],
+      "aliases": [],
+      "checked": "2026-11-11",
+      "known_mismatches": []
+    },
+    {
+      "name": "o3",
+      "provider": "openai",
+      "method": "tile",
+      "family": "openai",
+      "default_detail": "high",
+      "detail_aliases": {
+        "auto": "high"
+      },
+      "detail_rules": {
+        "high": {
+          "base": 75,
+          "tile_tokens": 150,
+          "box": 2048,
+          "short_side": 768,
+          "tile": 512
+        },
+        "low": {
+          "base": 75,
+          "low": true
+        }
+      },
+      "source_url": "https://developers.openai.com/api/docs/guides/images-vision",
+      "confidence": "documented",
+      "notes": [],
+      "aliases": [],
+      "checked": "2026-11-11",
+      "known_mismatches": []
+    },
+    {
+      "name": "gpt-4o-mini",
+      "provider": "openai",
+      "method": "tile",
+      "family": "openai",
+      "default_detail": "high",
+      "detail_aliases": {
+        "auto": "high"
+      },
+      "detail_rules": {
+        "high": {
+          "base": 2833,
+          "tile_tokens": 5667,
+          "box": 2048,
+          "short_side": 768,
+          "tile": 512
+        },
+        "low": {
+          "base": 2833,
+          "low": true
+        }
+      },
+      "source_url": "https://developers.openai.com/api/docs/guides/images-vision",
+      "confidence": "documented",
+      "notes": [
+        "Very large base/tile token counts, but a much lower price per token: never compare models by token count alone (pass prices to see cost)."
+      ],
+      "aliases": [],
+      "checked": "2026-11-11",
+      "known_mismatches": []
+    },
+    {
+      "name": "gemini-2",
+      "provider": "google",
+      "method": "tile",
+      "family": "gemini",
+      "default_detail": "default",
+      "detail_rules": {
+        "default": {
+          "small_edge": 384,
+          "tile": 768,
+          "tokens": 258
+        }
+      },
+      "source_url": "https://aistudio.google.com/docs/tokens",
+      "confidence": "approx",
+      "notes": [
+        "AI Studio docs: both edges <= 384 px -> 258 tokens, larger images -> 258 per 768x768 tile. The Vertex docs describe 'Pan and Scan, 258 tokens' instead, and forum reports show count_tokens and billed usage differing a lot. Treat as an approximation."
+      ],
+      "aliases": [],
+      "checked": "2026-11-11",
+      "detail_aliases": {},
+      "known_mismatches": []
+    },
+    {
+      "name": "gemini-3",
+      "provider": "google",
+      "method": "fixed",
+      "family": "gemini",
+      "aliases": [
+        "gemini-4"
+      ],
+      "default_detail": "high",
+      "detail_rules": {
+        "low": {
+          "tokens": 280
+        },
+        "medium": {
+          "tokens": 560
+        },
+        "high": {
+          "tokens": 1120
+        },
+        "ultra_high": {
+          "tokens": 2240
+        }
+      },
+      "source_url": "https://aistudio.google.com/docs/media-resolution",
+      "confidence": "documented",
+      "notes": [
+        "Tokens per image depend on media_resolution, not on pixels: resizing does not reduce them and slicing multiplies them. Default is high (1120); ultra_high can only be set per request."
+      ],
+      "checked": "2026-11-11",
+      "detail_aliases": {},
+      "known_mismatches": []
+    }
+  ]
+}
