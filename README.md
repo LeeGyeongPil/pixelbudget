@@ -237,7 +237,7 @@ Images written to pixelbudget-demo: fit.png, slice-01.png, compare.png
 - **Gemini 2 is `approx`.** The AI Studio and Vertex pages describe the rule differently, and forum reports show counts and billed usage disagreeing. Treat it as a rough number (`approx_rule`).
 - **Gemini 3 and later: resizing does not reduce tokens.** Cost depends only on `media_resolution` (low 280, medium 560, high 1120, ultra_high 2240 per image). `fit` leaves the image alone and suggests a level; slicing multiplies the cost.
 - **Docs disagree with themselves in one place.** Claude standard at 2000x1500: the docs table says 1269x952, the reference code on the same site gives 1270x952 (both 1564 tokens). pixelbudget follows the code and warns with `docs_table_mismatch`. Details in [docs/model-table.md](docs/model-table.md).
-- **Cosmetic quirks.** In English output a single-row summary reads `1 rows` (no singular form yet). In the Korean screenshots `01-report.ko.png` and `02-slice.ko.png` some columns look shifted because the capture font draws Hangul narrower than two cells; the text output itself is aligned.
+- **Cosmetic quirks.** In the Korean README screenshots of `report` and `slice` some columns look shifted because the capture font draws Hangul narrower than two cells; the text output itself is aligned.
 - **Only models with documented limits are in the table.** Models whose limits could not be confirmed are left out (for example `gpt-5.4` has `high` only). Providers change these rules; rows are plain JSON in `src/pixelbudget/data/models.json`. To update a stale row, follow [docs/model-table.md](docs/model-table.md#updating-a-row); the same page lists how each method counts tokens.
 - **Not implemented yet:** scanning JSONL request logs and calibrating against real usage records. No pricing data is bundled.
 - Slicing costs more tokens than a fitted single image. It does not OCR or check that text is actually readable; it only keeps the original scale.
@@ -271,7 +271,7 @@ Semantic Versioning. While the version is 0.x the API may change in a minor rele
 
 ```bash
 uv sync
-uv run pytest -q          # 238 passed, fully offline (sockets are blocked, API key variables removed)
+uv run pytest -q          # 242 passed, fully offline (sockets are blocked, API key variables removed)
 uv run python examples/quickstart.py
 ```
 

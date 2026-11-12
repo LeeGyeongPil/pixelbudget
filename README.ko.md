@@ -239,7 +239,7 @@ slice: 1170x1036 조각 10개, 축척 1.0 (합계 14364 토큰)
 - **Gemini 2 는 `approx` 입니다.** AI Studio 와 Vertex 문서가 규칙을 다르게 설명하고, 포럼에는 카운트와 청구 사용량이 어긋난다는 보고가 있습니다. 대략의 값으로 보세요(`approx_rule`).
 - **Gemini 3 이후: 리사이즈가 토큰을 줄이지 않습니다.** 비용은 `media_resolution`(이미지당 low 280, medium 560, high 1120, ultra_high 2240)으로만 정해집니다. `fit` 은 이미지를 그대로 두고 단계를 제안하며, 분할은 비용을 늘립니다.
 - **문서끼리 어긋나는 곳이 한 군데 있습니다.** Claude standard 2000x1500: 문서 표는 1269x952, 같은 사이트의 참조 코드는 1270x952 입니다(둘 다 1564 토큰). pixelbudget 은 코드를 따르고 `docs_table_mismatch` 로 경고합니다. 자세한 내용은 [docs/model-table.md](docs/model-table.md) (영어).
-- **겉모양 문제.** 영어 출력에서 행이 하나일 때 요약이 `1 rows` 로 나옵니다(단수형 없음). 한국어 스크린샷 `01-report.ko.png`·`02-slice.ko.png` 은 캡처 글꼴이 한글을 두 칸보다 좁게 그려 일부 열이 어긋나 보이지만, 텍스트 출력 자체는 정렬되어 있습니다.
+- **겉모양 문제.** 한국어 스크린샷 `01-report.ko.png`·`02-slice.ko.png` 은 캡처 글꼴이 한글을 두 칸보다 좁게 그려 일부 열이 어긋나 보이지만, 텍스트 출력 자체는 정렬되어 있습니다.
 - **한도가 문서로 확인된 모델만 표에 있습니다.** 확인하지 못한 모델은 뺐습니다(예: `gpt-5.4` 는 `high` 만). 제공자가 규칙을 바꿀 수 있으며, 행은 `src/pixelbudget/data/models.json` 의 평범한 JSON 입니다. 오래된 행을 고치려면 [docs/model-table.md](docs/model-table.md#updating-a-row) (영어)를 따르세요. 방식별 토큰 계산 표도 같은 문서에 있습니다.
 - **아직 없는 것:** JSONL 요청 로그 스캔, 실제 사용량 기록과의 보정(calibrate). 가격 데이터도 넣지 않았습니다.
 - 분할은 한 장으로 맞춘 것보다 토큰이 더 듭니다. OCR 을 하거나 글자가 정말 읽히는지 검사하지는 않고, 원래 배율만 유지합니다.
@@ -273,7 +273,7 @@ slice: 1170x1036 조각 10개, 축척 1.0 (합계 14364 토큰)
 
 ```bash
 uv sync
-uv run pytest -q          # 238 passed, 완전 오프라인(소켓 차단, API 키 환경변수 제거)
+uv run pytest -q          # 242 passed, 완전 오프라인(소켓 차단, API 키 환경변수 제거)
 uv run python examples/quickstart.py
 ```
 

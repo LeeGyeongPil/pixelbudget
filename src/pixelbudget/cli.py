@@ -236,7 +236,7 @@ def _cmd_report(args, lang, out, with_budget: bool) -> int:
     _print_warnings(lang, [c for r in result.rows for c in r.warnings], out)
     if result.skipped:
         print(t(lang, "report.skipped", paths=", ".join(result.skipped)), file=out)
-    print(t(lang, "report.summary", rows=len(result.rows), over=over, skipped=len(result.skipped)), file=out)
+    print(t(lang, "report.summary_one" if len(result.rows) == 1 else "report.summary", rows=len(result.rows), over=over, skipped=len(result.skipped)), file=out)
     return 1 if failed else 0
 
 
@@ -273,7 +273,7 @@ def _cmd_fit(args, lang, out) -> int:
 
 def _cmd_slice(args, lang, out) -> int:
     plan = plan_slices(measure(args.path), args.model, overlap=args.overlap, detail=args.detail)
-    print(t(lang, "slice.summary", n=len(plan.pieces), length=plan.piece_length, axis=t(lang, "axis." + plan.axis),
+    print(t(lang, "slice.summary_one" if len(plan.pieces) == 1 else "slice.summary", n=len(plan.pieces), length=plan.piece_length, axis=t(lang, "axis." + plan.axis),
             overlap=plan.overlap, total=plan.total_tokens, whole=plan.whole_tokens), file=out)
     headers = [t(lang, k) for k in ("col.piece", "col.box", "col.size", "col.tokens", "col.scale", "col.downscaled")]
     rows = [[str(p.index + 1), ",".join(map(str, p.box)), _size(p.size), str(p.tokens), f"{p.scale:.3f}",
