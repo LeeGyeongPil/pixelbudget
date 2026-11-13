@@ -37,3 +37,20 @@ These are surfaced as warning codes, never hidden.
 1. Open the provider's docs, copy the numbers into `models.json`, set `source_url`, `checked` and `confidence`.
 2. Add the example values from the docs to `tests/fixtures/doc_examples.json` (with their URL) so the next change is caught.
 3. If the docs contradict their own examples, keep the reference code's value, add a `known_mismatches` entry and describe it here.
+
+### Without a new release
+
+Put rows in the same format in your own file and point to it with `--models-file PATH` or `PIXELBUDGET_MODELS=PATH` (the flag wins). A row with the same `name` replaces the bundled row, a new name is added. The row is checked like a bundled row; its numbers, `source_url` and `confidence` are yours, so it shows Origin `user` and the `user_model_row` warning.
+
+```json
+{
+  "models": [
+    {
+      "name": "my-model", "provider": "me", "method": "patch", "family": "anthropic",
+      "default_detail": "default",
+      "detail_rules": {"default": {"patch": 28, "max_edge": 1568, "max_tokens": 1568}},
+      "source_url": "https://example.com/docs", "checked": "2026-11-13", "confidence": "measured"
+    }
+  ]
+}
+```

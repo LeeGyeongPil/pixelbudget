@@ -86,9 +86,9 @@ flowchart LR
 
 예외는 모두 `PixelBudgetError` 를 상속하고 안정적인 `.code` 를 가집니다: `UnknownModelError`, `UnsupportedDetailError`, `InvalidBudgetError`, `InvalidOverlapError`, `InvalidSizeError`, `UnreadableImageError`, `ImageTooLargeError`, `ModelTableError`.
 
-경고는 `.warnings` 의 고정 코드입니다: `server_downscaled`, `fixed_per_image`, `slice_increases_tokens`, `many_images`, `approx_rounding`, `approx_rule`, `docs_table_mismatch`, `decompression_guard`.
+경고는 `.warnings` 의 고정 코드입니다: `server_downscaled`, `fixed_per_image`, `slice_increases_tokens`, `many_images`, `approx_rounding`, `approx_rule`, `docs_table_mismatch`, `decompression_guard`, `user_model_row`.
 
-지원 모델은 `pixelbudget models` 로 봅니다(16행, 각 행에 출처 URL·확인 날짜·신뢰도).
+내장 모델은 `pixelbudget models` 로 봅니다(내장 16행, 각 행에 출처 URL·확인 날짜·신뢰도). `--models-file` 로 내 파일의 행을 덮어쓰거나 더할 수 있습니다.
 
 ## 사용 예
 
@@ -235,6 +235,13 @@ slice: 1170x1036 조각 10개, 축척 1.0 (합계 14364 토큰)
 | 예산 종료 코드 | `report --max-tokens N` | 한 행이라도 N 토큰을 넘으면 종료 코드 1, 사용법 오류는 2. |
 | 읽을 수 없는 파일 | `report`/`estimate --strict` | 이미지로 읽을 수 없는 파일이 있으면 종료 코드 1. 없으면 건너뛴 파일만 나열하고 종료 코드는 0 입니다. |
 | 디코딩 한도 | `--max-pixels` / `max_pixels=` | `fit`·`slice` 는 픽셀을 읽어야 하므로 이 값을 넘는 이미지는 `ImageTooLargeError` (기본값: Pillow 의 `MAX_IMAGE_PIXELS`). |
+| 내 모델 행 | `--models-file PATH`, `PIXELBUDGET_MODELS` | 내장 표와 같은 형식의 JSON 파일(`{"models": [...]}`). 같은 이름의 행은 내장 행을 대체하고, 새 이름은 추가됩니다. 사용자 행은 `pixelbudget models` 에서 구분 `user` 로 보이고 `user_model_row` 경고가 붙습니다. 옵션이 환경변수보다 우선합니다. |
+
+옵션은 서브커맨드 앞에 옵니다. 예:
+
+```bash
+pixelbudget --models-file my-models.json models
+```
 
 ## 한계 (숫자를 믿기 전에 읽으세요)
 
@@ -244,7 +251,7 @@ slice: 1170x1036 조각 10개, 축척 1.0 (합계 14364 토큰)
 - **Gemini 3 이후: 리사이즈가 토큰을 줄이지 않습니다.** 비용은 `media_resolution`(이미지당 low 280, medium 560, high 1120, ultra_high 2240)으로만 정해집니다. `fit` 은 이미지를 그대로 두고 단계를 제안하며, 분할은 비용을 늘립니다.
 - **문서끼리 어긋나는 곳이 한 군데 있습니다.** Claude standard 2000x1500: 문서 표는 1269x952, 같은 사이트의 참조 코드는 1270x952 입니다(둘 다 1564 토큰). pixelbudget 은 코드를 따르고 `docs_table_mismatch` 로 경고합니다. 자세한 내용은 [docs/model-table.md](docs/model-table.md) (영어).
 - **겉모양 문제.** 한국어 스크린샷 `01-report.ko.png`·`02-slice.ko.png` 은 캡처 글꼴이 한글을 두 칸보다 좁게 그려 일부 열이 어긋나 보이지만, 텍스트 출력 자체는 정렬되어 있습니다.
-- **한도가 문서로 확인된 모델만 표에 있습니다.** 확인하지 못한 모델은 뺐습니다(예: `gpt-5.4` 는 `high` 만). 제공자가 규칙을 바꿀 수 있으며, 행은 `src/pixelbudget/data/models.json` 의 평범한 JSON 입니다. 오래된 행을 고치려면 [docs/model-table.md](docs/model-table.md#updating-a-row) (영어)를 따르세요. 방식별 토큰 계산 표도 같은 문서에 있습니다.
+- **한도가 문서로 확인된 모델만 표에 있습니다.** 확인하지 못한 모델은 뺐습니다(예: `gpt-5.4` 는 `high` 만). 제공자가 규칙을 바꿀 수 있으며, 행은 `src/pixelbudget/data/models.json` 의 평범한 JSON 입니다. 오래된 행을 고치려면 [docs/model-table.md](docs/model-table.md#updating-a-row) (영어)를 따르세요. 방식별 토큰 계산 표도 같은 문서에 있습니다. 설치본을 고치지 말고 `--models-file` 로 행을 덮어쓰세요(설정 절 참고). 그 행의 수치·출처·신뢰도는 사용자 책임입니다.
 - **아직 없는 것:** JSONL 요청 로그 스캔, 실제 사용량 기록과의 보정(calibrate). 가격 데이터도 넣지 않았습니다.
 - 분할은 한 장으로 맞춘 것보다 토큰이 더 듭니다. OCR 을 하거나 글자가 정말 읽히는지 검사하지는 않고, 원래 배율만 유지합니다.
 
@@ -260,6 +267,7 @@ slice: 1170x1036 조각 10개, 축척 1.0 (합계 14364 토큰)
 | 증상 | 원인 | 해결 |
 |---|---|---|
 | `오류: 알 수 없는 모델입니다: 'foo'. 지원 모델 목록은 `pixelbudget models` 로 확인하세요.` (종료 코드 2) | 표에 없는 모델 이름 | `pixelbudget models` 로 확인. `gemini-4` 같은 별칭은 `gemini-3` 으로 연결됩니다. |
+| `오류: 모델 파일 ...: 올바른 JSON 이 아닙니다 (...)` (종료 코드 2) | `--models-file` / `PIXELBUDGET_MODELS` 로 준 파일이 올바른 JSON 이 아님(또는 UTF-8 이 아님) | 파일을 UTF-8 로 저장했는지 형식을 확인하세요. 행 형식은 [docs/model-table.md](docs/model-table.md) 를 참고하세요. |
 | `오류: 파일이나 폴더가 없습니다: 'nope.png'` (종료 코드 2) | 경로 오류 | 경로를 확인하세요. 폴더는 안의 이미지를 찾아 씁니다. |
 | `오류: ... 알 수 없는 이미지 확장자 '.weird'. .png, .jpg, .webp 를 쓰세요.` (종료 코드 2) | `--out` 확장자가 png·jpg·webp 가 아님 | `--out out.png` 처럼 지원 확장자를 쓰세요. |
 | `오류: 같은 이름의 파일이 이미 있어 폴더를 만들 수 없습니다: ...` (종료 코드 2) | 출력 폴더 자리에 같은 이름의 파일이 있음 | 파일을 옮기거나 다른 `--out` 폴더를 쓰세요. |

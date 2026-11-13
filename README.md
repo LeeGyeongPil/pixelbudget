@@ -86,9 +86,9 @@ All names are importable from `pixelbudget`. Sources (`ImageSource`) are a path,
 
 Errors all derive from `PixelBudgetError` and carry a stable `.code`: `UnknownModelError`, `UnsupportedDetailError`, `InvalidBudgetError`, `InvalidOverlapError`, `InvalidSizeError`, `UnreadableImageError`, `ImageTooLargeError`, `ModelTableError`.
 
-Warnings are stable codes in `.warnings`: `server_downscaled`, `fixed_per_image`, `slice_increases_tokens`, `many_images`, `approx_rounding`, `approx_rule`, `docs_table_mismatch`, `decompression_guard`.
+Warnings are stable codes in `.warnings`: `server_downscaled`, `fixed_per_image`, `slice_increases_tokens`, `many_images`, `approx_rounding`, `approx_rule`, `docs_table_mismatch`, `decompression_guard`, `user_model_row`.
 
-Run `pixelbudget models` for the supported models (16 rows, each with source URL, check date and confidence).
+Run `pixelbudget models` for the bundled models (16 rows, each with source URL, check date and confidence). Override or extend them with your own file via `--models-file`.
 
 ## Usage
 
@@ -233,6 +233,13 @@ Images written to pixelbudget-demo: fit.png, slice-01.png, compare.png
 | Budget exit code | `report --max-tokens N` | Exit 1 when any row is above N tokens; usage errors exit 2. |
 | Unreadable files | `report`/`estimate --strict` | Exit 1 when a file could not be read as an image. Without it, skipped files are listed and the exit code stays 0. |
 | Decode guard | `--max-pixels` / `max_pixels=` | `fit` and `slice` need pixels; images above this count raise `ImageTooLargeError` (default: Pillow's `MAX_IMAGE_PIXELS`). |
+| Your own model rows | `--models-file PATH`, `PIXELBUDGET_MODELS` | A JSON file in the bundled format (`{"models": [...]}`). A row with the same name replaces the bundled row, a new name is added. User rows show Origin `user` in `pixelbudget models` and carry the `user_model_row` warning. The flag wins over the variable. |
+
+The option goes before the subcommand, for example:
+
+```bash
+pixelbudget --models-file my-models.json models
+```
 
 ## Limits (read this before trusting a number)
 
@@ -242,7 +249,7 @@ Images written to pixelbudget-demo: fit.png, slice-01.png, compare.png
 - **Gemini 3 and later: resizing does not reduce tokens.** Cost depends only on `media_resolution` (low 280, medium 560, high 1120, ultra_high 2240 per image). `fit` leaves the image alone and suggests a level; slicing multiplies the cost.
 - **Docs disagree with themselves in one place.** Claude standard at 2000x1500: the docs table says 1269x952, the reference code on the same site gives 1270x952 (both 1564 tokens). pixelbudget follows the code and warns with `docs_table_mismatch`. Details in [docs/model-table.md](docs/model-table.md).
 - **Cosmetic quirks.** In the Korean README screenshots of `report` and `slice` some columns look shifted because the capture font draws Hangul narrower than two cells; the text output itself is aligned.
-- **Only models with documented limits are in the table.** Models whose limits could not be confirmed are left out (for example `gpt-5.4` has `high` only). Providers change these rules; rows are plain JSON in `src/pixelbudget/data/models.json`. To update a stale row, follow [docs/model-table.md](docs/model-table.md#updating-a-row); the same page lists how each method counts tokens.
+- **Only models with documented limits are in the table.** Models whose limits could not be confirmed are left out (for example `gpt-5.4` has `high` only). Providers change these rules; rows are plain JSON in `src/pixelbudget/data/models.json`. To update a stale row, follow [docs/model-table.md](docs/model-table.md#updating-a-row); the same page lists how each method counts tokens. Do not edit the installed package: override a row with `--models-file` (see Configuration); the numbers, source and confidence of such a row are yours.
 - **Not implemented yet:** scanning JSONL request logs and calibrating against real usage records. No pricing data is bundled.
 - Slicing costs more tokens than a fitted single image. It does not OCR or check that text is actually readable; it only keeps the original scale.
 
@@ -258,6 +265,7 @@ Sources: [Anthropic vision](https://platform.claude.com/docs/en/build-with-claud
 | Symptom | Cause | Fix |
 |---|---|---|
 | `error: Unknown model 'foo'. Run `pixelbudget models` to list supported models.` (exit 2) | Model name not in the table | Run `pixelbudget models`; aliases such as `gemini-4` map to `gemini-3`. |
+| `error: models file ...: not valid JSON (...)` (exit 2) | The file given to `--models-file` / `PIXELBUDGET_MODELS` is not valid JSON (or not UTF-8) | Save the file as UTF-8 and check the format; see [docs/model-table.md](docs/model-table.md) for the row format. |
 | `error: [Errno 2] No such file or directory: 'nope.png'` (exit 2) | Wrong path | Check the path; folders are scanned for images. |
 | `error: Cannot save '...y.weird': unknown image file extension '.weird'. Use .png, .jpg or .webp.` (exit 2) | `--out` extension is not png, jpg or webp | Use a supported extension such as `--out out.png`. |
 | `error: [Errno 17] File exists: '...'` (exit 2) | A file occupies the place of the output folder | Move the file or choose another `--out` folder. |

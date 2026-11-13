@@ -4,6 +4,12 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.3.0] - 2026-11-13
+
+### Added
+- `--models-file PATH` (top-level option) and the `PIXELBUDGET_MODELS` environment variable load a JSON file in the bundled table format. A row with the same name replaces the bundled row, a new name is added. The flag wins over the variable; the library follows the variable. Rows are validated like bundled rows; bad files exit 2 (`not valid JSON`, wrong shape, missing fields, duplicate names or aliases).
+- `ModelSpec.origin` (`builtin` or `user`, also in `as_dict()`), an Origin column in `pixelbudget models`, and the `user_model_row` warning on estimates that use a user row.
+
 ## [0.2.0] - 2026-11-13
 
 ### Added
@@ -25,3 +31,8 @@ All notable changes to this project are documented here. The format follows
 - `build_report`: one row per image and model, and also lists skipped files (`ReportResult`). `report()`/`build_report()` accept a single path or model string as well as lists.
 - English and Korean CLI output (`--lang`, `PIXELBUDGET_LANG`, locale variables), including error messages. Library exceptions keep their English text and carry `code`, `key` and `params`.
 - Examples `examples/make_samples.py` and `examples/fit_and_slice.py` used by the README walkthrough.
+
+[0.3.0]: https://github.com/LeeGyeongPil/pixelbudget/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/LeeGyeongPil/pixelbudget/compare/v0.1.1...v0.2.0
+[0.1.1]: https://github.com/LeeGyeongPil/pixelbudget/compare/v0.1.0...v0.1.1
+[0.1.0]: https://github.com/LeeGyeongPil/pixelbudget/releases/tag/v0.1.0
