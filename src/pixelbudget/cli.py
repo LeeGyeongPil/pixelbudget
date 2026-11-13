@@ -19,7 +19,8 @@ from .fit import fit, fit_size
 from .i18n import LANGS, resolve_lang, t
 from .measure import measure
 from .registry import get_model, list_models
-from .report import build_report
+from .report import build_report, size_rows
+from .types import ReportResult
 from .slicing import plan_slices, slice_image
 
 
@@ -114,7 +115,7 @@ def _build_parser(lang: str) -> argparse.ArgumentParser:
     m.add_argument("--format", choices=("table", "json"), default="table", help=t(lang, "help.format"))
 
     def multi(sp: argparse.ArgumentParser) -> None:
-        sp.add_argument("paths", nargs="+", metavar="PATH", help=t(lang, "help.paths"))
+        sp.add_argument("paths", nargs="+", metavar="PATH", help=t(lang, "help.paths_size" if sp.prog.endswith("estimate") else "help.paths"))
         sp.add_argument("--model", action="append", help=t(lang, "help.model"))
         sp.add_argument("--detail", help=t(lang, "help.detail"))
         sp.add_argument("--format", choices=("table", "json"), default="table", help=t(lang, "help.format"))
@@ -202,11 +203,37 @@ def _cmd_models(args, lang, out) -> int:
     return 0
 
 
+# estimate 전용: 같은 이름의 파일·폴더가 없고 WxH 모양이면 이미지 없이 크기로 계산한다(파일 우선).
+_SIZE_RE = re.compile(r"^\d+[xX]\d+$")
+
+
+def _is_size_arg(arg: str) -> bool:
+    return bool(_SIZE_RE.match(arg)) and not Path(arg).exists()
+
+
+def _estimate_mixed(args, models: list[str]) -> ReportResult:
+    """Handle estimate inputs one by one, in order: real paths via build_report, WxH via size_rows."""
+    rows: list = []
+    skipped: list[str] = []
+    for arg in args.paths:
+        if _is_size_arg(arg):
+            w, h = (int(n) for n in arg.lower().split("x"))
+            rows.extend(size_rows(arg, (w, h), models, detail=args.detail))
+        else:
+            part = build_report([arg], models, detail=args.detail)
+            rows.extend(part.rows)
+            skipped.extend(part.skipped)
+    return ReportResult(rows=tuple(rows), skipped=tuple(skipped))
+
+
 def _cmd_report(args, lang, out, with_budget: bool) -> int:
     models = args.model or ["claude-standard"]
     max_tokens = getattr(args, "max_tokens", None) if with_budget else None
     prices = _parse_prices(getattr(args, "price", None)) if with_budget else {}
-    result = build_report(args.paths, models, detail=args.detail, max_tokens=max_tokens, prices=prices)
+    if with_budget or not any(_is_size_arg(a) for a in args.paths):
+        result = build_report(args.paths, models, detail=args.detail, max_tokens=max_tokens, prices=prices)
+    else:
+        result = _estimate_mixed(args, models)
     over = sum(1 for r in result.rows if r.over_budget)
     failed = bool(over or (args.strict and result.skipped))  # --strict: unreadable files fail the run too
     if args.format == "json":

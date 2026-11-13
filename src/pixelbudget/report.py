@@ -41,6 +41,24 @@ def iter_image_paths(paths: Iterable[str | os.PathLike]) -> list[str]:
     return out
 
 
+def _make_row(label: str, est, max_tokens: int | None, price: float | None) -> ReportRow:
+    sw, sh = est.sent_size
+    ow, oh = est.original_size
+    return ReportRow(
+        path=label, model=est.model, original_size=est.original_size, sent_size=est.sent_size,
+        tokens=est.tokens, server_downscaled=est.server_downscaled,
+        wasted_pixels=max(0, ow * oh - sw * sh) if est.server_downscaled else 0,
+        over_budget=max_tokens is not None and est.tokens > max_tokens,
+        cost_usd=None if price is None else est.tokens * price / 1_000_000,
+        confidence=est.confidence, warnings=est.warnings,
+    )
+
+
+def size_rows(label: str, size: tuple[int, int], models: Sequence[str], *, detail: str | None = None) -> list[ReportRow]:
+    """Rows for a bare ``(width, height)`` size (no image file); ``label`` is shown in the path column."""
+    return [_make_row(label, estimate(size, get_model(m).name, detail=detail), None, None) for m in models]
+
+
 def build_report(paths: Iterable[str | os.PathLike], models: Sequence[str], *,
                  detail: str | None = None, max_tokens: int | None = None,
                  prices: dict[str, float] | None = None) -> ReportResult:
@@ -60,17 +78,7 @@ def build_report(paths: Iterable[str | os.PathLike], models: Sequence[str], *,
             except UnreadableImageError:
                 skipped.append(path)
                 break
-            sw, sh = est.sent_size
-            ow, oh = est.original_size
-            price = price_by_name.get(spec.name)
-            rows.append(ReportRow(
-                path=path, model=est.model, original_size=est.original_size, sent_size=est.sent_size,
-                tokens=est.tokens, server_downscaled=est.server_downscaled,
-                wasted_pixels=max(0, ow * oh - sw * sh) if est.server_downscaled else 0,
-                over_budget=max_tokens is not None and est.tokens > max_tokens,
-                cost_usd=None if price is None else est.tokens * price / 1_000_000,
-                confidence=est.confidence, warnings=est.warnings,
-            ))
+            rows.append(_make_row(path, est, max_tokens, price_by_name.get(spec.name)))
     return ReportResult(rows=tuple(rows), skipped=tuple(skipped))
 
 

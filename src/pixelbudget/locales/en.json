@@ -8,6 +8,7 @@
   "help.report": "Report tokens per image and model for files or folders; exit 1 if --max-tokens is exceeded.",
   "help.demo": "Run a self-contained demo on a synthetic long screenshot (practice data).",
   "help.paths": "Image files or folders.",
+  "help.paths_size": "Image files or folders, or a WxH size such as 1920x1080.",
   "help.path": "Image file.",
   "help.model": "Model name from `pixelbudget models` (repeatable).",
   "help.model_one": "Model name from `pixelbudget models`.",

@@ -8,6 +8,7 @@
   "help.report": "파일·폴더의 이미지별·모델별 토큰 보고서. --max-tokens 를 넘으면 종료 코드 1.",
   "help.demo": "합성한 긴 스크린샷으로 처음부터 끝까지 보여 주는 데모(연습 데이터).",
   "help.paths": "이미지 파일 또는 폴더.",
+  "help.paths_size": "이미지 파일·폴더, 또는 1920x1080 같은 WxH 크기.",
   "help.path": "이미지 파일.",
   "help.model": "`pixelbudget models` 의 모델 이름(여러 번 지정 가능).",
   "help.model_one": "`pixelbudget models` 의 모델 이름.",
