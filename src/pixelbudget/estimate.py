@@ -25,6 +25,7 @@ _MESSAGES = {
     "approx_rule": "The documented rule for this model is only an approximation of billed usage.",
     "docs_table_mismatch": "The docs table and the docs' reference code disagree for this size.",
     "decompression_guard": "Pixel count is above Pillow's decompression-bomb limit; decoding needs max_pixels.",
+    "user_model_row": "This model row comes from your models file, not the bundled table; its numbers and source are yours.",
 }
 
 
@@ -59,6 +60,8 @@ def estimate(source: ImageSource, model: str, *, detail: str | None = None) -> E
             notes.append(f"{mm['code']}: {mm['note']}")
     if exceeds_guard(size):
         warnings.append("decompression_guard")
+    if spec.origin == "user":
+        warnings.append("user_model_row")
     for code in warnings:
         if not any(n.startswith(code + ":") for n in notes):
             notes.append(f"{code}: {_MESSAGES[code]}")

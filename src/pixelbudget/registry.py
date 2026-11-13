@@ -5,18 +5,23 @@ from __future__ import annotations
 import difflib
 import functools
 import json
+import os
 import re
 from importlib import resources
+from pathlib import Path
 
 from .errors import ModelTableError, UnknownModelError, UnsupportedDetailError
 from .types import ModelSpec
+
+MODELS_ENV = "PIXELBUDGET_MODELS"
+_override: str | None = None  # set by the CLI's --models-file for the duration of one command
 
 _METHODS = {"patch", "tile", "fixed"}
 _CONFIDENCE = {"documented", "measured", "approx"}
 _DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 
-def _validate(raw: dict) -> ModelSpec:
+def _validate(raw: dict, origin: str = "builtin") -> ModelSpec:
     for key in ("name", "provider", "method", "family", "detail_rules", "default_detail",
                 "source_url", "checked", "confidence"):
         if key not in raw:
@@ -37,13 +42,62 @@ def _validate(raw: dict) -> ModelSpec:
         detail_aliases=dict(raw.get("detail_aliases", {})), aliases=tuple(raw.get("aliases", ())),
         source_url=raw["source_url"], checked=raw["checked"], confidence=raw["confidence"],
         notes=tuple(raw.get("notes", ())), known_mismatches=tuple(raw.get("known_mismatches", ())),
+        origin=origin,
     )
 
 
-@functools.lru_cache(maxsize=1)
+def _user_rows(path: str) -> list[ModelSpec]:
+    """Read and validate a user models file (same schema as the bundled table)."""
+    try:
+        # utf-8-sig accepts an optional BOM; non-UTF-8 bytes raise UnicodeDecodeError (a ValueError)
+        text = Path(path).read_text(encoding="utf-8-sig")
+        data = json.loads(text)
+    except ValueError as exc:
+        raise ModelTableError(key="model_table_json", path=path, reason=str(exc)) from exc
+    if not isinstance(data, dict) or not isinstance(data.get("models"), list):
+        raise ModelTableError(key="model_table_file", path=path)
+    rows = []
+    for raw in data["models"]:
+        if not isinstance(raw, dict):
+            raise ModelTableError(key="model_table_file", path=path)
+        rows.append(_validate(raw, origin="user"))
+    seen: set[str] = set()
+    for spec in rows:
+        if spec.name.lower() in seen:
+            raise ModelTableError(key="model_table_duplicate", alias=spec.name)
+        seen.add(spec.name.lower())
+    return rows
+
+
+def _models_path() -> str:
+    """Active user file: --models-file (CLI) > PIXELBUDGET_MODELS > none (empty string)."""
+    return _override or os.environ.get(MODELS_ENV, "")
+
+
+def set_models_file(path: str | None) -> None:
+    """Internal: CLI hook for --models-file (None clears it)."""
+    global _override
+    _override = path or None
+
+
 def _load() -> tuple[tuple[ModelSpec, ...], dict[str, ModelSpec]]:
+    return _load_path(_models_path())
+
+
+@functools.lru_cache(maxsize=8)
+def _load_path(path: str) -> tuple[tuple[ModelSpec, ...], dict[str, ModelSpec]]:
     text = resources.files("pixelbudget").joinpath("data/models.json").read_text(encoding="utf-8")
-    specs = tuple(_validate(r) for r in json.loads(text)["models"])
+    rows = [_validate(r) for r in json.loads(text)["models"]]
+    if path:
+        for user in _user_rows(path):
+            # same name (case-insensitive) replaces the whole bundled row, otherwise append
+            for n, old in enumerate(rows):
+                if old.name.lower() == user.name.lower():
+                    rows[n] = user
+                    break
+            else:
+                rows.append(user)
+    specs = tuple(rows)
     index: dict[str, ModelSpec] = {}
     for spec in specs:
         for key in (spec.name, *spec.aliases):

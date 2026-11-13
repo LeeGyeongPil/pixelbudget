@@ -85,8 +85,8 @@ def test_help_mentions_wxh_only_for_estimate_and_fits_80_columns(lang, capsys):
     assert max(len(line) for line in est_help.splitlines()) <= 80
 
 
-def test_version_is_0_2_0(capsys):
-    assert __version__ == "0.2.0"
+def test_version_is_0_3_0(capsys):
+    assert __version__ == "0.3.0"
     with pytest.raises(SystemExit):
         main(["--version"])
-    assert capsys.readouterr().out.strip() == "pixelbudget 0.2.0"
+    assert capsys.readouterr().out.strip() == "pixelbudget 0.3.0"

@@ -29,6 +29,7 @@ class ModelSpec:
     confidence: str  # "documented" | "measured" | "approx"
     notes: tuple[str, ...] = ()
     known_mismatches: tuple[dict[str, Any], ...] = ()
+    origin: str = "builtin"  # "builtin" | "user" (row came from a models file)
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -43,6 +44,7 @@ class ModelSpec:
             "checked": self.checked,
             "confidence": self.confidence,
             "notes": list(self.notes),
+            "origin": self.origin,
         }
 
 
@@ -169,4 +171,5 @@ WARNING_CODES = (
     "approx_rule",
     "docs_table_mismatch",
     "decompression_guard",
+    "user_model_row",
 )

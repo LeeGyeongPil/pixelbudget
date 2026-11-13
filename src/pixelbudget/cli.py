@@ -18,7 +18,7 @@ from .errors import PixelBudgetError
 from .fit import fit, fit_size
 from .i18n import LANGS, resolve_lang, t
 from .measure import measure
-from .registry import get_model, list_models
+from .registry import get_model, list_models, set_models_file
 from .report import build_report, size_rows
 from .types import ReportResult
 from .slicing import plan_slices, slice_image
@@ -104,6 +104,7 @@ def _print_warnings(lang: str, codes: Sequence[str], out) -> None:
 def _build_parser(lang: str) -> argparse.ArgumentParser:
     p = _Parser(prog="pixelbudget", description=t(lang, "app.description"), lang=lang)
     p.add_argument("--lang", choices=LANGS, help=t(lang, "help.lang"))
+    p.add_argument("--models-file", metavar="PATH", help=t(lang, "help.models_file"))
     p.add_argument("--version", action="version", version=f"pixelbudget {__version__}", help=t(lang, "help.version"))
     sub = p.add_subparsers(dest="command", required=True, metavar="{models,estimate,fit,slice,report,demo}",
                            parser_class=partial(_Parser, lang=lang))
@@ -197,8 +198,8 @@ def _cmd_models(args, lang, out) -> int:
         json.dump([s.as_dict() for s in specs], out, indent=2, ensure_ascii=False)
         print(file=out)
         return 0
-    headers = [t(lang, k) for k in ("col.model", "col.provider", "col.method", "col.confidence", "col.checked", "col.source")]
-    rows = [[s.name, s.provider, s.method, s.confidence, s.checked, s.source_url] for s in specs]
+    headers = [t(lang, k) for k in ("col.model", "col.provider", "col.method", "col.confidence", "col.checked", "col.source", "col.origin")]
+    rows = [[s.name, s.provider, s.method, s.confidence, s.checked, s.source_url, s.origin] for s in specs]
     print(_table(headers, rows), file=out)
     return 0
 
@@ -350,6 +351,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = _build_parser(lang)
     args = parser.parse_args(argv)
     out = sys.stdout
+    set_models_file(args.models_file)  # --models-file 은 환경변수보다 우선한다
     try:
         if args.command == "models":
             return _cmd_models(args, lang, out)
@@ -366,6 +368,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         # 라이브러리 예외는 영어 문구를 유지하고, 화면에는 고른 언어로 다시 렌더링해 보여 준다.
         print(f"{t(lang, 'error.prefix')}: {_error_text(lang, exc)}", file=sys.stderr)
         return 2
+    finally:
+        set_models_file(None)
 
 
 if __name__ == "__main__":  # pragma: no cover
