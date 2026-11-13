@@ -4,6 +4,11 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.2.0] - 2026-11-13
+
+### Added
+- `pixelbudget estimate` accepts a `WxH` size (for example `1920x1080`) in place of an image path and computes the estimate without an image. An existing file or folder with that name always wins; a size below 1 (`0x100`) is rejected with exit 2. `report` is unchanged.
+
 ## [0.1.1] - 2026-11-13
 
 ### Fixed

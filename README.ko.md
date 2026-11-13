@@ -128,7 +128,11 @@ Warnings:
 6 rows, 1 over budget, 0 skipped
 ```
 
-`pixelbudget estimate` 는 예산 열 없이 같은 표를 보여 줍니다(`--price`·`--max-tokens` 옵션이 없어 `--price` 를 주면 종료 코드 2 로 거부됩니다). 비용은 `report` 에 `--price 모델=USD`(백만 토큰당 가격, 직접 넣는 값이며 가격 데이터는 포함하지 않습니다)를 줄 때만 나옵니다. `--format json` 은 기계가 읽는 출력입니다.
+`pixelbudget estimate` 는 예산 열 없이 같은 표를 보여 줍니다(`--price`·`--max-tokens` 옵션이 없어 `--price` 를 주면 종료 코드 2 로 거부됩니다). 비용은 `report` 에 `--price 모델=USD`(백만 토큰당 가격, 직접 넣는 값이며 가격 데이터는 포함하지 않습니다)를 줄 때만 나옵니다. `--format json` 은 기계가 읽는 출력입니다. `pixelbudget estimate` 는 경로 대신 `1920x1080` 같은 크기도 받으므로 이미지 없이 견적을 낼 수 있습니다: `uv run pixelbudget --lang ko estimate 1920x1080 --model gpt-4o`. 크기는 파일·폴더와 섞어 줄 수 있고 경로 열에는 입력한 문자열이 그대로 나옵니다. 같은 이름의 파일이나 폴더가 있으면 그쪽이 우선하며, 1 미만 크기(`0x100`)는 종료 코드 2 로 거부됩니다. `report` 는 계속 파일과 폴더만 받습니다.
+
+![WxH 크기로 견적을 내는 터미널 화면](docs/images/04-estimate-size.ko.png)
+
+*이미지 없이 `1920x1080` 만으로 gpt-4o 기준 1105 토큰이 나오고, 서버가 먼저 1365x768 로 줄입니다.*
 
 ### 2. 토큰 예산에 맞춰 줄이기
 
@@ -273,7 +277,7 @@ slice: 1170x1036 조각 10개, 축척 1.0 (합계 14364 토큰)
 
 ```bash
 uv sync
-uv run pytest -q          # 242 passed, 완전 오프라인(소켓 차단, API 키 환경변수 제거)
+uv run pytest -q          # 완전 오프라인(소켓 차단, API 키 환경변수 제거)
 uv run python examples/quickstart.py
 ```
 
