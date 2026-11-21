@@ -106,7 +106,7 @@
   "error.image_too_large": "Image is {w}x{h} = {pixels} pixels, above the decode limit of {limit}. Pass max_pixels=<larger value> (CLI: --max-pixels) if you trust this image.",
   "error.no_models": "report needs at least one model, e.g. models=['claude-standard'].",
   "error.price_format": "--price expects MODEL=USD_PER_MILLION_TOKENS, got {item!r}.",
-  "error.price_number": "--price value must be a number, got {item!r}.",
+  "error.price_number": "--price value must be a finite number of 0 or more, got {item!r}.",
   "error.unknown_extension": "Cannot save {path!r}: unknown image file extension {ext!r}. Use .png, .jpg or .webp.",
   "error.model_table_missing": "model row {name!r} is missing '{field}'",
   "error.model_table_method": "{name}: unknown method {method!r}",

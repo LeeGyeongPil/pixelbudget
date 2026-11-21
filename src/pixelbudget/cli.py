@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import re
 import sys
 import unicodedata
@@ -159,9 +160,12 @@ def _parse_prices(items: list[str] | None) -> dict[str, float]:
         if not sep:
             raise PixelBudgetError(key="price_format", item=item)
         try:
-            prices[name] = float(value)
+            number = float(value)
         except ValueError:
             raise PixelBudgetError(key="price_number", item=item) from None
+        if not (math.isfinite(number) and number >= 0):
+            raise PixelBudgetError(key="price_number", item=item)
+        prices[name] = number
     return prices
 
 
@@ -195,7 +199,7 @@ def _error_text(lang: str, exc: Exception) -> str:
 def _cmd_models(args, lang, out) -> int:
     specs = list_models()
     if args.format == "json":
-        json.dump([s.as_dict() for s in specs], out, indent=2, ensure_ascii=False)
+        json.dump([s.as_dict() for s in specs], out, indent=2, ensure_ascii=False, allow_nan=False)
         print(file=out)
         return 0
     headers = [t(lang, k) for k in ("col.model", "col.provider", "col.method", "col.confidence", "col.checked", "col.source", "col.origin")]
@@ -240,7 +244,7 @@ def _cmd_report(args, lang, out, with_budget: bool) -> int:
     if args.format == "json":
         payload = {"rows": [r.as_dict() for r in result.rows], "skipped": list(result.skipped),
                    "summary": {"rows": len(result.rows), "over_budget": over, "skipped": len(result.skipped)}}
-        json.dump(payload, out, indent=2, ensure_ascii=False)
+        json.dump(payload, out, indent=2, ensure_ascii=False, allow_nan=False)
         print(file=out)
         return 1 if failed else 0
     headers = [t(lang, k) for k in ("col.path", "col.model", "col.original", "col.sent", "col.tokens", "col.downscaled", "col.wasted")]
