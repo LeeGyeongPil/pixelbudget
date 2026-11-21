@@ -126,7 +126,7 @@ Warnings:
 6 rows, 1 over budget, 0 skipped
 ```
 
-`pixelbudget estimate` prints the same table without the budget column (it has no `--price` or `--max-tokens`; passing `--price` is rejected with exit 2). Only `report` shows costs, and only when you pass `--price MODEL=USD` (price per million tokens is your input; no prices are bundled). `--format json` gives machine-readable output. `pixelbudget estimate` also accepts a size such as `1920x1080` in place of a path, so you can get an estimate without an image: `uv run pixelbudget --lang en estimate 1920x1080 --model gpt-4o`. You can mix sizes with files and folders; the path column shows the text you typed. A file or folder with that name wins over the size reading, and a size below 1 (`0x100`) is rejected with exit 2. `report` still takes files and folders only.
+`pixelbudget estimate` prints the same table without the budget column (it has no `--price` or `--max-tokens`; passing `--price` is rejected with exit 2). Only `report` shows costs, and only when you pass `--price MODEL=USD` (price per million tokens is your input, a finite number of 0 or more — anything else exits 2; no prices are bundled). `--format json` gives machine-readable output. `pixelbudget estimate` also accepts a size such as `1920x1080` in place of a path, so you can get an estimate without an image: `uv run pixelbudget --lang en estimate 1920x1080 --model gpt-4o`. You can mix sizes with files and folders; the path column shows the text you typed. A file or folder with that name wins over the size reading, and a size below 1 (`0x100`) is rejected with exit 2. `report` still takes files and folders only.
 
 ![estimate from a WxH size in a terminal](docs/images/04-estimate-size.png)
 
