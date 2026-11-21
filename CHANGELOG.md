@@ -4,6 +4,13 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+## [0.3.1] - 2026-11-21
+
+### Fixed
+- `report --max-tokens` (and `report()`/`build_report()` `max_tokens`) now rejects 0 and negative values with `InvalidBudgetError` (exit 2), like `fit --budget`, instead of marking every row over budget.
+
 ## [0.3.0] - 2026-11-13
 
 ### Added
@@ -32,6 +39,7 @@ All notable changes to this project are documented here. The format follows
 - English and Korean CLI output (`--lang`, `PIXELBUDGET_LANG`, locale variables), including error messages. Library exceptions keep their English text and carry `code`, `key` and `params`.
 - Examples `examples/make_samples.py` and `examples/fit_and_slice.py` used by the README walkthrough.
 
+[0.3.1]: https://github.com/LeeGyeongPil/pixelbudget/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/LeeGyeongPil/pixelbudget/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/LeeGyeongPil/pixelbudget/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/LeeGyeongPil/pixelbudget/compare/v0.1.0...v0.1.1
