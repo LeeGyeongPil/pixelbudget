@@ -89,3 +89,29 @@ def test_demo_runs_and_writes_images(tmp_path, capsys):
     text = capsys.readouterr().out
     assert "synthetic practice data" in text and "14364" in text
     assert sorted(p.name for p in out.iterdir()) == ["compare.png", "fit.png", "slice-01.png"]
+
+
+@pytest.mark.parametrize("value", ["0", "-5"])
+def test_report_cli_rejects_non_positive_max_tokens(folder, capsys, value):
+    assert main(["--lang", "en", "report", str(folder), "--max-tokens", value]) == 2
+    assert "budget must be a positive integer" in capsys.readouterr().err
+
+
+def test_report_cli_rejects_non_positive_max_tokens_ko(folder, capsys):
+    assert main(["--lang", "ko", "report", str(folder), "--max-tokens", "0"]) == 2
+    err = capsys.readouterr().err
+    assert "양의 정수" in err and "budget must be" not in err
+
+
+def test_report_cli_positive_max_tokens_unchanged(folder, capsys):
+    assert main(["report", str(folder), "--max-tokens", "1"]) == 1  # over budget, not a usage error
+
+
+@pytest.mark.parametrize("value", [0, -1, True, 1.5])
+def test_report_library_rejects_bad_max_tokens(folder, value):
+    from pixelbudget import InvalidBudgetError, build_report
+
+    with pytest.raises(InvalidBudgetError):
+        report([str(folder)], ["gpt-4o"], max_tokens=value)
+    with pytest.raises(InvalidBudgetError):
+        build_report([str(folder)], ["gpt-4o"], max_tokens=value)

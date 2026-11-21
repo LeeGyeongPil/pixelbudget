@@ -7,7 +7,7 @@ import os
 from pathlib import Path
 from typing import Iterable, Sequence
 
-from .errors import PixelBudgetError, UnreadableImageError
+from .errors import InvalidBudgetError, PixelBudgetError, UnreadableImageError
 from .estimate import estimate
 from .registry import get_model
 from .types import ReportResult, ReportRow
@@ -63,6 +63,9 @@ def build_report(paths: Iterable[str | os.PathLike], models: Sequence[str], *,
                  detail: str | None = None, max_tokens: int | None = None,
                  prices: dict[str, float] | None = None) -> ReportResult:
     """Estimate every image under ``paths`` for every model. Unreadable files are listed in ``skipped``."""
+    if max_tokens is not None and (not isinstance(max_tokens, int) or isinstance(max_tokens, bool)
+                                   or max_tokens <= 0):
+        raise InvalidBudgetError(budget=max_tokens)
     paths = _as_list(paths, "paths")
     models = _as_list(models, "models")
     if not models:
