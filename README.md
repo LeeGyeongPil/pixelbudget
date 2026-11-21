@@ -230,7 +230,7 @@ Images written to pixelbudget-demo: fit.png, slice-01.png, compare.png
 |---|---|---|
 | Output language | `--lang en\|ko`, `PIXELBUDGET_LANG`, then `LC_ALL`/`LC_MESSAGES`/`LANG`; English if none | CLI text in English or Korean. Without `--lang` it follows your locale, so a Korean locale prints Korean. |
 | Detail level | `--detail` / `detail=` | The provider's detail setting (for example `low`/`high` on tile models, `media_resolution` on Gemini 3). Defaults come from the model table. |
-| Budget exit code | `report --max-tokens N` | Exit 1 when any row is above N tokens; usage errors exit 2. |
+| Budget exit code | `report --max-tokens N` | N must be a positive integer (0 or negative exits 2). Exit 1 when any row is above N tokens; usage errors exit 2. |
 | Unreadable files | `report`/`estimate --strict` | Exit 1 when a file could not be read as an image. Without it, skipped files are listed and the exit code stays 0. |
 | Decode guard | `--max-pixels` / `max_pixels=` | `fit` and `slice` need pixels; images above this count raise `ImageTooLargeError` (default: Pillow's `MAX_IMAGE_PIXELS`). |
 | Your own model rows | `--models-file PATH`, `PIXELBUDGET_MODELS` | A JSON file in the bundled format (`{"models": [...]}`). A row with the same name replaces the bundled row, a new name is added. User rows show Origin `user` in `pixelbudget models` and carry the `user_model_row` warning. The flag wins over the variable. |

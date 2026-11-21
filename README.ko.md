@@ -232,7 +232,7 @@ slice: 1170x1036 조각 10개, 축척 1.0 (합계 14364 토큰)
 |---|---|---|
 | 출력 언어 | `--lang en\|ko`, `PIXELBUDGET_LANG`, 그다음 `LC_ALL`/`LC_MESSAGES`/`LANG`; 없으면 영어 | CLI 문구를 영어·한국어로. `--lang` 이 없으면 로케일을 따르므로 한국어 로케일에서는 한국어로 나옵니다. |
 | 세부 설정 | `--detail` / `detail=` | 제공자의 detail 설정(타일 모델은 `low`/`high`, Gemini 3 은 `media_resolution`). 기본값은 모델 표에서 옵니다. |
-| 예산 종료 코드 | `report --max-tokens N` | 한 행이라도 N 토큰을 넘으면 종료 코드 1, 사용법 오류는 2. |
+| 예산 종료 코드 | `report --max-tokens N` | N 은 양의 정수여야 합니다(0·음수는 종료 코드 2). 한 행이라도 N 토큰을 넘으면 종료 코드 1, 사용법 오류는 2. |
 | 읽을 수 없는 파일 | `report`/`estimate --strict` | 이미지로 읽을 수 없는 파일이 있으면 종료 코드 1. 없으면 건너뛴 파일만 나열하고 종료 코드는 0 입니다. |
 | 디코딩 한도 | `--max-pixels` / `max_pixels=` | `fit`·`slice` 는 픽셀을 읽어야 하므로 이 값을 넘는 이미지는 `ImageTooLargeError` (기본값: Pillow 의 `MAX_IMAGE_PIXELS`). |
 | 내 모델 행 | `--models-file PATH`, `PIXELBUDGET_MODELS` | 내장 표와 같은 형식의 JSON 파일(`{"models": [...]}`). 같은 이름의 행은 내장 행을 대체하고, 새 이름은 추가됩니다. 사용자 행은 `pixelbudget models` 에서 구분 `user` 로 보이고 `user_model_row` 경고가 붙습니다. 옵션이 환경변수보다 우선합니다. |
