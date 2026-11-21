@@ -6,6 +6,11 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.3.2] - 2026-11-22
+
+### Fixed
+- `--price` now rejects negative, `nan` and `inf` values (exit 2, `price_number`), and `--format json` output is always standard JSON (`allow_nan=False`).
+
 ## [0.3.1] - 2026-11-21
 
 ### Fixed

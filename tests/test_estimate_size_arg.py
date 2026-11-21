@@ -86,7 +86,7 @@ def test_help_mentions_wxh_only_for_estimate_and_fits_80_columns(lang, capsys):
 
 
 def test_version_is_0_3_0(capsys):
-    assert __version__ == "0.3.1"
+    assert __version__ == "0.3.2"
     with pytest.raises(SystemExit):
         main(["--version"])
-    assert capsys.readouterr().out.strip() == "pixelbudget 0.3.1"
+    assert capsys.readouterr().out.strip() == "pixelbudget 0.3.2"
