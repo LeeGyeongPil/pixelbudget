@@ -268,7 +268,9 @@ def _cmd_report(args, lang, out, with_budget: bool) -> int:
     _print_warnings(lang, [c for r in result.rows for c in r.warnings], out)
     if result.skipped:
         print(t(lang, "report.skipped", paths=", ".join(result.skipped)), file=out)
-    print(t(lang, "report.summary_one" if len(result.rows) == 1 else "report.summary", rows=len(result.rows), over=over, skipped=len(result.skipped)), file=out)
+    prefix = "report" if with_budget else "estimate"
+    key = f"{prefix}.summary_one" if len(result.rows) == 1 else f"{prefix}.summary"
+    print(t(lang, key, rows=len(result.rows), over=over, skipped=len(result.skipped)), file=out)
     return 1 if failed else 0
 
 

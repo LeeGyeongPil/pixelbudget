@@ -57,6 +57,8 @@
   "error.prefix": "error",
   "report.summary": "{rows} rows, {over} over budget, {skipped} skipped",
   "report.summary_one": "{rows} row, {over} over budget, {skipped} skipped",
+  "estimate.summary": "{rows} rows, {skipped} skipped",
+  "estimate.summary_one": "{rows} row, {skipped} skipped",
   "report.skipped": "Skipped (not readable as images): {paths}",
   "report.no_images": "No image files found.",
   "fit.written": "Wrote {path}: {w}x{h}, {tokens} tokens (scale {scale:.3f}).",

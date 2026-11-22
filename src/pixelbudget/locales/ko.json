@@ -57,6 +57,8 @@
   "error.prefix": "오류",
   "report.summary": "{rows}행, 예산 초과 {over}행, 건너뜀 {skipped}개",
   "report.summary_one": "{rows}행, 예산 초과 {over}행, 건너뜀 {skipped}개",
+  "estimate.summary": "{rows}행, 건너뜀 {skipped}개",
+  "estimate.summary_one": "{rows}행, 건너뜀 {skipped}개",
   "report.skipped": "건너뜀(이미지로 읽을 수 없음): {paths}",
   "report.no_images": "이미지 파일을 찾지 못했습니다.",
   "fit.written": "{path} 저장: {w}x{h}, {tokens} 토큰 (축척 {scale:.3f}).",
